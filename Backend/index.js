@@ -9,5 +9,5 @@ app.listen(PORT, () => {
 })
 
 app.get("/" , (req,res) => {
-    res.send(`<h1> This is Home Page </h1>`)
+    res.send(`<h1> This is Home/Default Page </h1>`)
 })

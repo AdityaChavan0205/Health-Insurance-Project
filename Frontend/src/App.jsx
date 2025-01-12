@@ -3,7 +3,7 @@ import React from 'react'
 function App() {
   return (
     <div>Health_Insurance_project
-      <h1> This My Demo Project</h1>
+      <h1>Welcome! Explore Our Plans</h1>
     </div>
 
   )

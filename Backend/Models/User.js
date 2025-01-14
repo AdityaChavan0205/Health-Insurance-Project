@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema(
 
     phoneNo: {
       type: String,
-      required: true,
       maxLength: 20,
     },
 
@@ -45,10 +44,62 @@ const userSchema = new mongoose.Schema(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
+    
+    otp: {
+      type:String,
+      require:true
+    },
+
+    otpExpiry: {
+      type:Date,
+      // default: Date.now, 
+      // expires: 300
+    }
+
   },
+
   {
     timestamps: true, // Adds createdAt and updatedAt fields
   }
+
 );
 
 module.exports = mongoose.model("User", userSchema);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// {
+//   "email": "chavanaditya0205@gmail.com",
+//   "password": "Aditya@0205"
+// }
+
+
+
+
+// {
+// 	"name": "Mayank Sandikar",
+//     "email": "mayanksandikar191098@gmail.com",
+//     "password": "mayank@123",
+//     "role": "User",
+//     "phoneNo": "7899635698"
+// }
+
+
+// {
+//   "email": "mayanksandikar191098@gmail.com",
+//    "password": "mayank@123"
+// }

@@ -1,82 +1,82 @@
-// const jwt = require("jsonwebtoken");
-// require("dotenv").config();
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-// exports.authMiddleware = (req,res,next) => {
+exports.authMiddleware = (req,res,next) => {
 
-//     try{
-//         // const token =  req.body.token || req.cookies.token;
-//         const token = req.header("Authorization").replace("Bearer ", "");
+    try{
+        // const token =  req.body.token || req.cookies.token;
+        const token = req.header("Authorization").replace("Bearer ", "");
         
-//         // Check if token exists
-//         if(!token) {
-//             return res.status(401).json({
-//                 success:false,
-//                 msg:"Access denied, no token provided"
-//             })
-//         }
+        // Check if token exists
+        if(!token) {
+            return res.status(401).json({
+                success:false,
+                msg:"Access denied, no token provided"
+            })
+        }
 
-//         try{
-//             // Verify the token
-//             const decode = jwt.verify(token, process.env.SECRET_KEY);
-//             console.log("Data -->>", decode);
-//             req.user = decode; // Attach decoded data to request object   ( decode = payload )
-//             next(); // Proceed to the next middleware or route handler
+        try{
+            // Verify the token
+            const decode = jwt.verify(token, process.env.SECRET_KEY);
+            console.log("Data -->>", decode);
+            req.user = decode; // Attach decoded data to request object   ( decode = payload )
+            next(); // Proceed to the next middleware or route handler
 
-//         } catch {
-//             return res.status(403).json({
-//                 success:false,
-//                 msg:"Invalid token"
-//             })
-//         }
+        } catch {
+            return res.status(403).json({
+                success:false,
+                msg:"Invalid token"
+            })
+        }
         
-//     } catch(err) {
-//         console.error(err);
-//         res.status(500).json({
-//             success:false,
-//             msg:"An error occurred during token verification."
-//         })
-//     }
-// }
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({
+            success:false,
+            msg:"An error occurred during token verification."
+        })
+    }
+}
 
 
-// exports.isUser = (req,res,next) => {
+exports.isUser = (req,res,next) => {
 
-//     try{
+    try{
 
-//         if(req.user.role !== "User") {
-//             return res.status(403).json({
-//                 success:false,
-//                 msg:"Access denied. This route is restricted to students."
-//             })
-//         }
-//         next();
+        if(req.user.role !== "User") {
+            return res.status(403).json({
+                success:false,
+                msg:"Access denied. This route is restricted to students."
+            })
+        }
+        next();
 
-//     } catch(err){
-//         console.error(err)
-//         res.status(500).json({
-//             success:false,
-//             msg:"Internal server error during role verification."
-//         })
-//     }
-// }
+    } catch(err){
+        console.error(err)
+        res.status(500).json({
+            success:false,
+            msg:"Internal server error during role verification."
+        })
+    }
+}
 
-// exports.isAdmin = (req,res,next) => {
+exports.isAdmin = (req,res,next) => {
 
-//     try{
+    try{
 
-//         if(req.user.role !== "Admin") {
-//             return res.status(403).json({
-//                 success:false,
-//                 msg:"Access denied. This route is restricted to admin."
-//             })
-//         }
-//         next();
+        if(req.user.role !== "Admin") {
+            return res.status(403).json({
+                success:false,
+                msg:"Access denied. This route is restricted to admin."
+            })
+        }
+        next();
 
-//     } catch(err) {
-//         console.error(err)
-//         res.status(500).json({
-//             success:false,
-//             msg:"Internal server error during role verification."
-//         })
-//     }
-// }
+    } catch(err) {
+        console.error(err)
+        res.status(500).json({
+            success:false,
+            msg:"Internal server error during role verification."
+        })
+    }
+}

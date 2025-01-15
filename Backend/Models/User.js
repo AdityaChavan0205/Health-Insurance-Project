@@ -3,12 +3,20 @@ require("dotenv").config();
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
       required: true,
       maxLength: 50,
       trim: true,
     },
+
+    lastName: {
+      type: String,
+      required: true,
+      maxLength: 50,
+      trim: true,
+    },
+    
     email: {
       type: String,
       required: true,
@@ -17,11 +25,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+
     password: {
       type: String,
       required: true,
       maxLength: 500,
     },
+
     role: {
       type: String,
       enum: ["Admin", "User", "Visitor"],
@@ -50,14 +60,16 @@ const userSchema = new mongoose.Schema(
       require:true
     },
 
-    otpExpiry: {
-      type:Date,
-      // default: Date.now, 
-      // expires: 300
-    }
+    otpExpiry:{
+      type:Date
+    },
 
-  },
-
+    isVerified: { 
+      type: Boolean, 
+      default: false 
+    }, // Ensure this is included
+}, 
+    
   {
     timestamps: true, // Adds createdAt and updatedAt fields
   }
@@ -65,41 +77,3 @@ const userSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("User", userSchema);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// {
-//   "email": "chavanaditya0205@gmail.com",
-//   "password": "Aditya@0205"
-// }
-
-
-
-
-// {
-// 	"name": "Mayank Sandikar",
-//     "email": "mayanksandikar191098@gmail.com",
-//     "password": "mayank@123",
-//     "role": "User",
-//     "phoneNo": "7899635698"
-// }
-
-
-// {
-//   "email": "mayanksandikar191098@gmail.com",
-//    "password": "mayank@123"
-// }

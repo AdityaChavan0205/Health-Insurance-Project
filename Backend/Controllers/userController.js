@@ -1,22 +1,27 @@
+const UserModels = require("../models/User");
+const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const UserModels = require("../models/User");
 const { sendEmail } = require("../utils/email");
-const otpGenerator = require("otp-generator");
 
 // User signup and OTP generation
 exports.userSignUp = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { firstName, lastName, email, password } = req.body;
 
         // Validation
-        if (!name || !email || !password) {
+        if (!firstName || !lastName || !email || !password) {
             return res.status(400).json({ success: false, msg: "All fields are required" });
         }
 
         const existingUser = await UserModels.findOne({ email });
         if (existingUser) {
             return res.status(409).json({ success: false, msg: "Email already exists." });
+        }
+
+        // Admin Cannot be registered as a user
+        if(process.env.ADMIN_MAIL === email) {
+            return res.status(409).json({ success: false, msg: "This email is already registered as an admin." });
         }
 
         // Generate OTP and expiry time
@@ -28,7 +33,8 @@ exports.userSignUp = async (req, res) => {
 
         // Save the user to the database with otp and expiry
         const user = await UserModels.create({
-            name,
+            firstName,
+            lastName,
             email,
             password: hashPassword,
             otp,
@@ -55,6 +61,7 @@ exports.userSignUp = async (req, res) => {
 
 
 // Verify OTP and create the user account
+// Verify OTP and create the user account
 exports.verifyOtp = async (req, res) => {
     try {
         const { userId, otp } = req.body;
@@ -78,7 +85,19 @@ exports.verifyOtp = async (req, res) => {
         user.otp = null;
         user.otpExpiry = null;
         user.isVerified = true;
-        await user.save();
+
+        await user.save(); // Save the updated user to the database
+
+        // Send welcome email
+        await sendEmail(
+            user.email,
+            "SignUp Notification",
+            `
+            <h3>Welcome to Health Life Insurance, ${user.name}!</h3>
+            <p>Thank you for signing up with us. We’re excited to help you manage your health insurance needs.</p>
+            <p>If you have any questions, feel free to contact our support team at <a href="mailto:support@healthcare.com">support@healthcare.com</a>.</p>
+            <p>Warm regards,<br>The Health Care Team</p>`
+        );
 
         res.status(200).json({
             success: true,
@@ -93,68 +112,83 @@ exports.verifyOtp = async (req, res) => {
 
 
 
-
 // User Login
 exports.userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Validate required fields
+        // Validate input
         if (!email || !password) {
             return res.status(400).json({ success: false, msg: "Email and password are required." });
         }
 
+        // Admin Cannot be Login as a user
+        if(process.env.ADMIN_MAIL === email) {
+            return res.status(409).json({ success: false, msg: "This email is already registered as an admin." });
+        }
+
+        // Fetch user
+        3
         const user = await UserModels.findOne({ email });
         if (!user) {
             return res.status(404).json({ success: false, msg: "User not found. Please sign up first." });
         }
 
-        // Check if the user is verified
+        
+
+        // Log user data for debugging
+        console.log("Login User Data:", user);
+
+        // Check verification status
         if (!user.isVerified) {
             return res.status(400).json({ success: false, msg: "Please verify your OTP before logging in." });
         }
 
+        // Validate password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ success: false, msg: "Invalid email or password." });
         }
 
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, email: user.email, role: "User" }, process.env.SECRET_KEY, { expiresIn: "1h" });
+        // Generate JWT
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.SECRET_KEY, { expiresIn: "1h" });
 
-        // Remove sensitive data like password from the response
-        const userResponse = { ...user.toObject() };
-        delete userResponse.password;
-        userResponse.token = token;
-
-        // Send response with cookie
-        const cookieOptions = {
+        // Set JWT as HTTP-only cookie
+        res.cookie("authToken", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: process.env.NODE_ENV === "production", // Secure in production
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000,
-        };
+            maxAge: 60 * 60 * 1000 // 1 hour
+        });
 
-        res.status(200).cookie("token", token, cookieOptions).json({
+        // Send Login Notification
+        await sendEmail(
+            user.email,
+            "Login Notification",
+            `
+            <h3>Hello ${user.name},</h3>
+            <p>We noticed a login to your Health Life Insurance account.</p>
+            <p>If this was you, you can safely disregard this email. However, if you did not initiate this login, please secure your account immediately by resetting your password.</p>
+            <p>For assistance, contact our support team at <a href="mailto:support@healthcare.com">support@healthcare.com</a>.</p>
+            <p>Stay safe,<br>The Health Care Team</p>
+            `
+        );
+
+        // Send success response
+        res.status(200).json({
             success: true,
-            token,
-            user: userResponse,
-            msg: "User logged in successfully"
+            msg: "Login successful.",
+            token
         });
 
-    } catch (err) {
-        console.error("Error during login:", err);
-        res.status(500).json({
-            success: false,
-            msg: "An error occurred during login. Please try again later."
-        });
+    } catch (error) {
+        console.error("Login Error:", error);
+        res.status(500).json({ success: false, msg: "Error during login. Please try again later." });
     }
 };
 
 
-
-
-// Admin Login (same as before)
+// Admin Login
 exports.adminLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -185,6 +219,21 @@ exports.adminLogin = async (req, res) => {
             msg: "Admin logged in successfully.",
             token,
         });
+
+         // Send Login Notification
+         await sendEmail(
+            email,
+            "Login Notification",
+            `
+            <h3>Hello Admin,</h3>
+            <p>We noticed a login to your <strong>Health Life Insurance</strong> account.</p>
+            <p>If this login was initiated by you, no further action is required. However, if you did not initiate this login, please secure your account immediately by resetting your password.</p>
+            <p>For assistance, you can contact our support team at <a href="mailto:support@healthcare.com">support@healthcare.com</a>.</p>
+            <p>Stay safe,</p>
+            <p><strong>The Health Care Team</strong></p>
+            `
+        );
+
     } catch (err) {
         console.error("Error during admin login:", err.message);
         res.status(500).json({

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function PlanCard() {
+const PlanCard = () => {
   return (
     <div>PlanCard</div>
   )

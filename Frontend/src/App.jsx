@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -29,5 +30,17 @@ const App = () => {
     </Provider>
   );
 };
+=======
+import React from 'react';
+import Navbar from './Components/Navbar';
+import { Provider } from 'react-redux';
+import store from './Components/redux/store/store';
+
+const App = () => (
+    <Provider store={store}>
+        <Navbar />
+    </Provider>
+);
+>>>>>>> 180851cedefaabd9befc26d93be9051dfa8c6836
 
 export default App;

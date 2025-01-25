@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+<<<<<<< HEAD
 const cors = require('cors');
 
 // Define corsOptions
@@ -11,6 +12,20 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions)); // Use CORS with options
+=======
+const cors = require("cors");
+
+// Enable CORS for all requests
+const corsOptions = {
+    origin: ["http://localhost:5173"], // Allowed frontend origin
+    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    credentials: true, // Enable credentials (for cookies, etc.)
+  };
+  app.use(cors(corsOptions));
+  
+  
+>>>>>>> 180851cedefaabd9befc26d93be9051dfa8c6836
 
 // Middleware
 app.use(express.json()); // Parse JSON request bodies

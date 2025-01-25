@@ -1,12 +1,12 @@
-import React from 'react'
-import Login from './Components/Login'
+import React from 'react';
+import Navbar from './Components/Navbar';
+import { Provider } from 'react-redux';
+import store from './Components/redux/store/store';
 
-function App() {
-  return (
-    <div>
-      <Login/>
-    </div>
-  )
-}
+const App = () => (
+    <Provider store={store}>
+        <Navbar />
+    </Provider>
+);
 
-export default App
+export default App;

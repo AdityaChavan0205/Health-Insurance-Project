@@ -2,9 +2,39 @@ import React from 'react'
 
 function Login() {
   return (
+
     <div>
-      <button>Akash Click here</button>
+
+      <div>
+
+        <form action="">
+
+          <input 
+            type="text"
+            placeholder="First Name"
+          />
+          <input 
+            type="text"
+            placeholder="Last Name"
+          />
+          
+          <input 
+            type="email"
+            placeholder="Enter E-mail"
+          />
+          
+          <input 
+            type="password"
+            placeholder="Enter Password"
+          />
+
+
+        </form>
+
+      </div>
+
     </div>
+
   )
 }
 

@@ -1,4 +1,3 @@
-// App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -8,19 +7,23 @@ import Home from "./Pages/Home";
 import About from "./Pages/AboutUs";
 import Claim from "./Pages/Claim";
 import Support from "./Pages/Support";
-
-
+import Login from "./Pages/Login";
+import Auth from "./Pages/Auth";
+import SignUp from "./Pages/SignUp"; // Make sure SignUp is imported correctly
 
 const App = () => {
   return (
     <Provider store={store}>
       <Router>
-        <Navbar/>
- 
+        <Navbar /> {/* Always visible */}
         <Routes>
-          {/* <Route path="/claim" element={<Claim />} />
-          <Route path="/support" element={<Support />} /> */}
-          {/* Add more routes as needed */}
+          <Route path="/" element={<Home />} /> {/* Default route */}
+          <Route path="/about" element={<About />} />
+          <Route path="/claim" element={<Claim />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} /> Fixed typo
+          <Route path="/auth" element={<Auth />} /> {/* Signup/Login */}
         </Routes>
       </Router>
     </Provider>
@@ -28,6 +31,3 @@ const App = () => {
 };
 
 export default App;
-
-
-

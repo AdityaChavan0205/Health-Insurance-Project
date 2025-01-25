@@ -49,14 +49,23 @@ const Navbar = () => {
             <li className="hover:text-blue-600 cursor-pointer">
               <Link to="/expert">Talk to Expert 📞</Link>
             </li>
+
             {/* Login Button */}
             <li>
-              <button
-                onClick={handleAuthClick}
-                className="bg-cyan-800 text-white px-4 py-2 rounded hover:bg-blue-700 text-base font-medium"
-              >
-                Login
-              </button>
+              <Link to="/login">
+                <button className="bg-cyan-800 text-white px-4 py-2 rounded hover:bg-blue-700">
+                  Login
+                </button>
+              </Link>
+            </li>
+
+            {/* Sign Up Button */}
+            <li>
+              <Link to="/signup">
+                <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                  Sign Up
+                </button>
+              </Link>
             </li>
           </ul>
         </nav>

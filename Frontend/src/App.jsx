@@ -1,4 +1,8 @@
-import React from 'react'
+import React from 'react';
+import Navbar from './Components/Navbar';
+import { Provider } from 'react-redux';
+import store from './Components/redux/store/store';
+
 
 function App() {
   return (
@@ -9,4 +13,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

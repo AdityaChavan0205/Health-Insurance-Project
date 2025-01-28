@@ -21,6 +21,7 @@ const Login = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-500 to-purple-600">
       <div className="bg-white shadow-lg rounded-lg p-8 w-96 max-w-md">
         <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">Login</h2>
@@ -54,6 +55,55 @@ const Login = () => {
             {loading ? "Logging In..." : "Login"}
           </button>
         </form>
+<<<<<<< HEAD
+=======
+=======
+
+    <div>
+
+      <div>
+
+        <form action="">
+
+          <input 
+            type="text"
+            placeholder="First Name"
+          />
+          <input 
+            type="text"
+            placeholder="Last Name"
+          />
+          
+          <input 
+            type="email"
+            placeholder="Enter E-mail"
+          />
+          
+          <input 
+            type="password"
+            placeholder="Enter Password"
+          />
+
+
+        </form>
+
+      </div>
+
+    </div>
+
+  )
+}
+>>>>>>> 180851cedefaabd9befc26d93be9051dfa8c6836
+
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{" "}
+            <a href="/signup" className="text-blue-500 hover:underline">
+              Sign up here
+            </a>
+          </p>
+        </div>
+>>>>>>> 8e9ef8f60000f3d19c61a386b402074c3acc15c8
       </div>
     </div>
   );

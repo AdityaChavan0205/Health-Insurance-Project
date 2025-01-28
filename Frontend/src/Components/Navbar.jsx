@@ -1,12 +1,35 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/Slices/authSlice";
 import Claim from "../Pages/Claim";
 import Support from "../Pages/Support";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth.formData);
+
   const handleAuthClick = () => {
-    alert("Login/Signup functionality goes here.");
+    if (isLoggedIn) {
+      // Log out the user
+      dispatch(logout());
+      alert("You have successfully logged out.");
+      navigate("/"); // Redirect to home page after logout
+    } else {
+      navigate("/login");
+    }
   };
+
+  // Update `isLoggedIn` state when token is present
+  React.useEffect(() => {
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [token]);
 
   return (
     <header className="bg-white shadow-md">
@@ -46,26 +69,15 @@ const Navbar = () => {
             <li>
               <Support />
             </li>
-            <li className="hover:text-blue-600 cursor-pointer">
-              <Link to="/expert">Talk to Expert 📞</Link>
-            </li>
 
-            {/* Login Button */}
+            {/* Login/Logout Button */}
             <li>
-              <Link to="/login">
-                <button className="bg-cyan-800 text-white px-4 py-2 rounded hover:bg-blue-700">
-                  Login
-                </button>
-              </Link>
-            </li>
-
-            {/* Sign Up Button */}
-            <li>
-              <Link to="/signup">
-                <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                  Sign Up
-                </button>
-              </Link>
+              <button
+                onClick={handleAuthClick}
+                className="bg-cyan-800 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                {isLoggedIn ? "Logout" : "Login"}
+              </button>
             </li>
           </ul>
         </nav>

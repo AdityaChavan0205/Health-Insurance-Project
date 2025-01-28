@@ -1,54 +1,29 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { setFormData, setOtp, signUp, verifyOtp } from "../redux/Slices/authSlice";
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
-  const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState("");
-  const [userId, setUserId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { formData, otpSent, otp, loading, userId, error } = useSelector((state) => state.auth);
 
-  const handleSignUp = async (e) => {
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
 
-    try {
-      const response = await axios.post("http://localhost:3000/api/v1/signup/user", formData);
-      if (response.data.success) {
-        alert(response.data.msg);
-        setOtpSent(true); // Proceed to OTP verification
-        setUserId(response.data.userId);
-      }
-    } catch (error) {
-      alert(error.response?.data?.msg || "Error during signup.");
-    } finally {
-      setLoading(false); // End loading
+    // Check if the password and confirm password match
+    if (formData.password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
     }
+
+    // Dispatch signUp action
+    dispatch(signUp(formData));
   };
 
-  const handleVerifyOtp = async (e) => {
+  const handleVerifyOtp = (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
-
-    try {
-      const response = await axios.post("http://localhost:3000/api/v1/signup/user/verify-otp", {
-        userId,
-        otp,
-      });
-      if (response.data.success) {
-        alert(response.data.msg);
-        window.location.href = "/login"; // Redirect to login
-      }
-    } catch (error) {
-      alert(error.response?.data?.msg || "Error during OTP verification.");
-    } finally {
-      setLoading(false); // End loading
-    }
+    dispatch(verifyOtp({ userId, otp }));
   };
 
   return (
@@ -57,79 +32,51 @@ const SignUp = () => {
         <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
           {otpSent ? "Verify OTP" : "Sign Up"}
         </h2>
-        
-        {loading && (
-          <div className="text-center mb-4 text-blue-500">Processing...</div>
-        )}
-
-        {!otpSent ? (
-          <form onSubmit={handleSignUp}>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">First Name</label>
-              <input
-                type="text"
-                value={formData.firstName}
-                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="border border-gray-300 rounded-lg w-full p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Last Name</label>
-              <input
-                type="text"
-                value={formData.lastName}
-                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="border border-gray-300 rounded-lg w-full p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="border border-gray-300 rounded-lg w-full p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Password</label>
-              <input
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="border border-gray-300 rounded-lg w-full p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white w-full py-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={loading}
-            >
-              {loading ? "Signing Up..." : "Sign Up"}
+        {error && <div className="text-red-500 mb-4">{error}</div>}
+        {otpSent ? (
+          <form onSubmit={handleVerifyOtp}>
+            <input
+              type="text"
+              value={otp}
+              onChange={(e) => dispatch(setOtp(e.target.value))}
+              className="border rounded-lg w-full p-3"
+              placeholder="Enter OTP"
+              required
+            />
+            <button type="submit" className="bg-green-500 w-full py-3 mt-4">
+              {loading ? "Verifying..." : "Verify OTP"}
             </button>
           </form>
         ) : (
-          <form onSubmit={handleVerifyOtp}>
+          <form onSubmit={handleSubmit}>
+            {/* Form Inputs */}
+            {["firstName", "lastName", "email", "password"].map((field) => (
+              <div key={field} className="mb-4">
+                <input
+                  type={field === "password" ? "password" : "text"}
+                  value={formData[field]}
+                  onChange={(e) => dispatch(setFormData({ [field]: e.target.value }))}
+                  className="border rounded-lg w-full p-3"
+                  placeholder={`Enter ${field}`}
+                  required
+                />
+              </div>
+            ))}
+
+            {/* Confirm Password Field */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">OTP</label>
               <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className="border border-gray-300 rounded-lg w-full p-3 mt-1 focus:outline-none focus:ring-2 focus:ring-green-500"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="border rounded-lg w-full p-3"
+                placeholder="Confirm Password"
                 required
               />
             </div>
-            <button
-              type="submit"
-              className="bg-green-500 text-white w-full py-3 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-              disabled={loading}
-            >
-              {loading ? "Verifying OTP..." : "Verify OTP"}
+
+            <button type="submit" className="bg-blue-500 w-full py-3">
+              {loading ? "Signing Up..." : "Sign Up"}
             </button>
           </form>
         )}

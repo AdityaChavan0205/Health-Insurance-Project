@@ -1,22 +1,8 @@
-// store.js
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from "../Slices/authSlice";
 
-const navSlice = createSlice({
-  name: "nav",
-  initialState: { activePage: "Home" },
-  reducers: {
-    setActivePage: (state, action) => {
-      state.activePage = action.payload;
-    },
-  },
-});
-
-export const { setActivePage } = navSlice.actions;
-
-const store = configureStore({
+export const store = configureStore({
   reducer: {
-    nav: navSlice.reducer,
+    auth: authReducer,
   },
 });
-
-export default store;

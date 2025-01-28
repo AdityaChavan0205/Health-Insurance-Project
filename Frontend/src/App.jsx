@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./redux/Store/store";
+import {store} from "./redux/Store/store";
 import Navbar from "./Components/Navbar";
 import Home from "./Pages/Home";
 import About from "./Pages/AboutUs";
@@ -10,10 +10,12 @@ import Support from "./Pages/Support";
 import Login from "./Pages/Login";
 import Auth from "./Pages/Auth";
 import SignUp from "./Pages/SignUp"; // Make sure SignUp is imported correctly
-
+import LoginSignup from "./Pages/LogInSingUp";
+import "./App.css"
+import LoginSignUp from "./Pages/LogInSingUp";
 const App = () => {
   return (
-    <Provider store={store}>
+    <Provider store={store}> 
       <Router>
         <Navbar /> {/* Always visible */}
         <Routes>
@@ -21,9 +23,13 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/claim" element={<Claim />} />
           <Route path="/support" element={<Support />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} /> Fixed typo
-          <Route path="/auth" element={<Auth />} /> {/* Signup/Login */}
+          {/* <Route path="/login" element={<LoginSignup />} /> */}
+          <Route path="/login" element={<LoginSignUp />} />
+          <Route path="/signup" element={<SignUp />} /> 
+
+          {/* <Route path="/expert" element={<Expert />} /> */}
+          {/* <Route path="/auth" element={<Auth />} /> Signup/Login */}
+
         </Routes>
       </Router>
     </Provider>

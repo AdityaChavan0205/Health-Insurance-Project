@@ -2,12 +2,13 @@ const express = require("express");
 
 const router = express.Router();
 
-const {userSignUp,verifyOtp, userLogin, adminLogin} = require('../Controllers/userController');
+const {userSignUp,verifyOtp, userLogin,userForgetPassword, adminLogin} = require('../Controllers/userController');
 const {authMiddleware, isUser, isAdmin} = require('../Middlewares/authMiddleware')
 
 router.post("/signup/user", userSignUp);
 router.post("/signup/user/verify-otp", verifyOtp);
 router.post("/login/user", userLogin);
+router.post("/login/user/forget-password", userForgetPassword);
 router.post("/login/admin", adminLogin);
 
 

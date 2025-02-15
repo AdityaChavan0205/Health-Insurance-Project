@@ -1,9 +1,39 @@
-import React from 'react'
-
-function App() {
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import {store} from "./redux/Store/store";
+import Navbar from "./Components/Navbar";
+import Home from "./Pages/Home";
+import About from "./Pages/AboutUs";
+import Claim from "./Pages/Claim";
+import Support from "./Pages/Support";
+import Login from "./Pages/Login";
+import Auth from "./Pages/Auth";
+import SignUp from "./Pages/SignUp"; // Make sure SignUp is imported correctly
+import LoginSignup from "./Pages/LogInSingUp";
+import "./App.css"
+import LoginSignUp from "./Pages/LogInSingUp";
+const App = () => {
   return (
-    <div>Health_Insurance_project</div>
-  )
-}
+    <Provider store={store}> 
+      <Router>
+        <Navbar /> {/* Always visible */}
+        <Routes>
+          <Route path="/" element={<Home />} /> {/* Default route */}
+          <Route path="/about" element={<About />} />
+          <Route path="/claim" element={<Claim />} />
+          <Route path="/support" element={<Support />} />
+          {/* <Route path="/login" element={<LoginSignup />} /> */}
+          <Route path="/login" element={<LoginSignUp />} />
+          <Route path="/signup" element={<SignUp />} /> 
 
-export default App
+          {/* <Route path="/expert" element={<Expert />} /> */}
+          {/* <Route path="/auth" element={<Auth />} /> Signup/Login */}
+
+        </Routes>
+      </Router>
+    </Provider>
+  );
+};
+
+export default App;

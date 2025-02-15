@@ -22,7 +22,7 @@ const Navbar = () => {
     }
   };
 
-  // Update `isLoggedIn` state when token is present
+  // Update isLoggedIn state when token is present
   React.useEffect(() => {
     if (token) {
       setIsLoggedIn(true);
@@ -56,27 +56,75 @@ const Navbar = () => {
         {/* Right Side: Navigation Links */}
         <nav>
           <ul className="flex items-center space-x-6 text-gray-700 text-base font-medium">
-            <li className="hover:text-blue-600 cursor-pointer">
-              <Link to="/">Home</Link>
+            {/* Home Link */}
+            <li className="flex items-center space-x-2 group hover:scale-105 transition-transform">
+              <img
+                src="https://icons.veryicon.com/png/o/miscellaneous/home-icon-1/house-30.png" // Colorful Home Icon
+                alt="Home"
+                className="w-6 h-6 group-hover:scale-110 transition-transform"
+              />
+              <Link
+                to="/"
+                className="group-hover:text-blue-600 transition-colors duration-300"
+              >
+                Home
+              </Link>
             </li>
-            <li className="hover:text-blue-600 cursor-pointer">
-              <Link to="/about">About Us</Link>
+
+            {/* About Us Link */}
+            <li className="flex items-center space-x-2 group hover:scale-105 transition-transform">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/3356/3356179.png"
+                alt="About"
+                className="w-6 h-6 group-hover:scale-110 transition-transform"
+              />
+              <Link
+                to="/about"
+                className="group-hover:text-blue-600 transition-colors duration-300"
+              >
+                About Us
+              </Link>
             </li>
-            {/* Custom Components (Claim and Support) */}
-            <li>
+
+            <li className="flex items-center space-x-2 hover:scale-105 transition-transform">
+              {/* Icon for Claim */}
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/6559/6559976.png"
+                alt="Claim Icon"
+                className="w-6 h-6 transition-transform"
+              />
+              {/* Claim Component */}
               <Claim />
             </li>
-            <li>
+
+            <li className="flex items-center space-x-2 hover:scale-105 transition-transform">
+              {/* Icon for Support */}
+              <img
+                src="https://www.iconpacks.net/icons/2/free-customer-support-icon-1714-thumb.png" // Colorful Support Icon
+                alt="Support Icon"
+                className="w-6 h-6 transition-transform"
+              />
+              {/* Support Component */}
               <Support />
             </li>
 
+
             {/* Login/Logout Button */}
-            <li>
+            <li className="flex items-center space-x-2">
               <button
                 onClick={handleAuthClick}
-                className="bg-cyan-800 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="flex items-center space-x-2 bg-cyan-800 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-transform"
               >
-                {isLoggedIn ? "Logout" : "Login"}
+                <img
+                  src={
+                    isLoggedIn
+                      ? "https://www.iconpacks.net/icons/1/free-user-logout-icon-304-thumb.png" // Colorful Logout Icon
+                      : "https://www.iconpacks.net/icons/1/free-user-login-icon-305-thumb.png" // Colorful Login Icon
+                  }
+                  alt="Auth Icon"
+                  className="w-6 h-6"
+                />
+                <span>{isLoggedIn ? "Logout" : "Login"}</span>
               </button>
             </li>
           </ul>

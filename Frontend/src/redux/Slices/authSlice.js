@@ -8,7 +8,7 @@ const initialState = {
     lastName: "",
     email: "",
     password: "",
-    token: null, // Added to store token
+    token: localStorage.getItem("token") || null, // Persist token
   },
   loading: false,
   otpSent: false,
@@ -18,37 +18,98 @@ const initialState = {
 };
 
 // Async actions
-export const signUp = createAsyncThunk("auth/signUp", async (formData, { rejectWithValue }) => {
-  try {
-    const response = await axios.post("http://localhost:3000/api/v1/signup/user", formData);
-    return response.data;
-  } catch (err) {
-    return rejectWithValue(err.response?.data?.msg || "Error during signup.");
+export const signUp = createAsyncThunk(
+  "auth/signUp",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/v1/signup/user", formData);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.msg || "Error during signup.");
+    }
   }
-});
+);
 
-export const verifyOtp = createAsyncThunk("auth/verifyOtp", async ({ userId, otp }, { rejectWithValue }) => {
-  try {
-    const response = await axios.post("http://localhost:3000/api/v1/signup/user/verify-otp", { userId, otp });
-    return response.data;
-  } catch (err) {
-    return rejectWithValue(err.response?.data?.msg || "Error during OTP verification.");
+export const sendOtp = createAsyncThunk(
+  "auth/sendOtp",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/v1/send-otp", { email });
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.msg || "Error during OTP sending.");
+    }
   }
-});
+);
 
-export const login = createAsyncThunk("auth/login", async (formData, { rejectWithValue }) => {
-  try {
-    const response = await axios.post("http://localhost:3000/api/v1/login/user", formData);
-    return response.data; // Assuming response contains { token, user }
-  } catch (err) {
-    return rejectWithValue(err.response?.data?.msg || "Error during login.");
+export const verifyOtp = createAsyncThunk(
+  "auth/verifyOtp",
+  async ({ userId, otp }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/v1/signup/user/verify-otp", { userId, otp });
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.msg || "Error during OTP verification.");
+    }
   }
-});
+);
 
-// Logout action to clear token and user data
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/v1/login/user/forget-password", { email });
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.msg || "Error during password reset request.");
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ email, otp, newPassword }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/v1/login/user/forget-password", { email, otp, newPassword });
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.msg || "Error during password reset.");
+    }
+  }
+);
+
+export const login = createAsyncThunk(
+  "auth/login",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/v1/login/user", formData);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.msg || "Error during login.");
+    }
+  }
+);
+
 export const logout = createAsyncThunk("auth/logout", async () => {
-  return null; // We're just clearing the data on logout
+  return null;
 });
+
+// Utility function for handling async states
+const handleAsync = (builder, asyncThunk, successHandler) => {
+  builder
+    .addCase(asyncThunk.pending, (state) => {
+      state.loading = true;
+      state.error = "";
+    })
+    .addCase(asyncThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      successHandler(state, action);
+    })
+    .addCase(asyncThunk.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload || "Something went wrong.";
+    });
+};
 
 // Slice
 const authSlice = createSlice({
@@ -66,52 +127,44 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      // Sign Up
-      .addCase(signUp.pending, (state) => {
-        state.loading = true;
-        state.error = "";
-      })
-      .addCase(signUp.fulfilled, (state, action) => {
-        state.loading = false;
-        state.otpSent = true;
-        state.userId = action.payload.userId;
-      })
-      .addCase(signUp.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Verify OTP
-      .addCase(verifyOtp.pending, (state) => {
-        state.loading = true;
-        state.error = "";
-      })
-      .addCase(verifyOtp.fulfilled, (state) => {
-        state.loading = false;
-        state.otpSent = false;
-        state.userId = "";
-      })
-      .addCase(verifyOtp.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Login
-      .addCase(login.pending, (state) => {
-        state.loading = true;
-        state.error = "";
-      })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loading = false;
-        state.formData.token = action.payload.token; // Save token from API response
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Logout
-      .addCase(logout.fulfilled, (state) => {
-        state.formData = initialState.formData; // Reset form data
-      });
+    // Sign Up
+    handleAsync(builder, signUp, (state, action) => {
+      state.otpSent = true;
+      state.userId = action.payload.userId;
+    });
+
+    // Send OTP
+    handleAsync(builder, sendOtp, (state) => {
+      state.otpSent = true;
+    });
+
+    // Verify OTP
+    handleAsync(builder, verifyOtp, (state) => {
+      state.otpSent = false;
+      state.userId = "";
+    });
+
+    // Forgot Password
+    handleAsync(builder, forgotPassword, (state) => {
+      state.otpSent = true;
+    });
+
+    // Reset Password
+    handleAsync(builder, resetPassword, (state) => {
+      state.otpSent = false;
+    });
+
+    // Login
+    handleAsync(builder, login, (state, action) => {
+      state.formData.token = action.payload.token;
+      localStorage.setItem("token", action.payload.token); // Persist token
+    });
+
+    // Logout
+    handleAsync(builder, logout, (state) => {
+      state.formData = initialState.formData;
+      localStorage.removeItem("token"); // Clear token
+    });
   },
 });
 

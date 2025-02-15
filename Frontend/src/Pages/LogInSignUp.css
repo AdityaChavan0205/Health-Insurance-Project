@@ -1,0 +1,80 @@
+.login-signup-container {
+    animation: fadeIn 0.5s ease-in-out;
+    padding: 20px;
+}
+
+.login-signup-form {
+    animation: zoomIn 0.5s ease-in-out;
+}
+
+.close-button {
+    transition: transform 0.2s ease-in-out;
+}
+
+.close-button:hover {
+    transform: rotate(90deg);
+}
+
+button {
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    background: linear-gradient(45deg, #1e90ff, #00ff7f);
+    background-size: 200% 200%;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background-position: right center;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .login-signup-form {
+        width: 90%;
+        padding: 16px;
+    }
+
+    .login-signup-container {
+        padding: 10px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-signup-form {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .login-signup-container {
+        padding: 5px;
+    }
+
+    button {
+        font-size: 12px;
+    }
+}

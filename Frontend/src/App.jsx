@@ -13,6 +13,7 @@ import SignUp from "./Pages/SignUp"; // Make sure SignUp is imported correctly
 import LoginSignup from "./Pages/LogInSingUp";
 import "./App.css"
 import LoginSignUp from "./Pages/LogInSingUp";
+import Reset from "./Pages/Reset";
 const App = () => {
   return (
     <Provider store={store}> 
@@ -29,7 +30,7 @@ const App = () => {
 
           {/* <Route path="/expert" element={<Expert />} /> */}
           {/* <Route path="/auth" element={<Auth />} /> Signup/Login */}
-
+ <Route path="/reset-password" element={<Reset />} />
         </Routes>
       </Router>
     </Provider>

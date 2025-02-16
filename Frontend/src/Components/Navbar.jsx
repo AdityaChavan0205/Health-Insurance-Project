@@ -56,27 +56,57 @@ const Navbar = () => {
         {/* Right Side: Navigation Links */}
         <nav>
           <ul className="flex items-center space-x-6 text-gray-700 text-base font-medium">
-            <li className="hover:text-blue-600 cursor-pointer">
-              <Link to="/">Home</Link>
-            </li>
-            <li className="hover:text-blue-600 cursor-pointer">
-              <Link to="/about">About Us</Link>
-            </li>
-            {/* Custom Components (Claim and Support) */}
-            <li>
-              <Claim />
-            </li>
-            <li>
-              <Support />
+            {/* Home Link */}
+            <li className="flex items-center space-x-2 group hover:scale-105 transition-transform">
+            
+              <Link
+                to="/"
+                className="group-hover:text-blue-600 transition-colors duration-300"
+              >
+                Home
+              </Link>
             </li>
 
+            {/* About Us Link */}
+            <li className="flex items-center space-x-2 group hover:scale-105 transition-transform">
+      
+              <Link
+                to="/about"
+                className="group-hover:text-blue-600 transition-colors duration-300"
+              >
+                About Us
+              </Link>
+            </li>
+
+            <li className="flex items-center space-x-2 hover:scale-105 transition-transform">
+  {/* Icon for Claim */}
+  {/* Claim Component */}
+  <Claim />
+</li>
+
+            <li className="flex items-center space-x-2 hover:scale-105 transition-transform">
+  {/* Icon for Support */}
+  {/* Support Component */}
+  <Support />
+</li>
+
+
             {/* Login/Logout Button */}
-            <li>
+            <li className="flex items-center space-x-2">
               <button
                 onClick={handleAuthClick}
-                className="bg-cyan-800 text-white px-4 py-2 rounded hover:bg-blue-700"
+                className="flex items-center space-x-2 bg-cyan-800 text-white px-4 py-2 rounded hover:bg-blue-700 hover:scale-105 transition-transform"
               >
-                {isLoggedIn ? "Logout" : "Login"}
+                <img
+                  src={
+                    isLoggedIn
+                      ? "https://www.iconpacks.net/icons/1/free-user-logout-icon-304-thumb.png" // Colorful Logout Icon
+                      : "https://www.iconpacks.net/icons/1/free-user-login-icon-305-thumb.png" // Colorful Login Icon
+                  }
+                  alt="Auth Icon"
+                  className="w-6 h-6"
+                />
+                <span>{isLoggedIn ? "Logout" : "Login"}</span>
               </button>
             </li>
           </ul>

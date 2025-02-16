@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
       maxLength: 50,
       trim: true,
     },
-    
+
     email: {
       type: String,
       required: true,
@@ -54,22 +54,25 @@ const userSchema = new mongoose.Schema(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
-    
+
     otp: {
-      type:String,
-      require:true
+      type: String,
+      require: true
     },
 
-    otpExpiry:{
-      type:Date
+    otpExpiry: {
+      type: Date
     },
 
-    isVerified: { 
-      type: Boolean, 
-      default: false 
+    isVerified: {
+      type: Boolean,
+      default: false
     }, // Ensure this is included
-}, 
-    
+
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+  },
+
   {
     timestamps: true, // Adds createdAt and updatedAt fields
   }

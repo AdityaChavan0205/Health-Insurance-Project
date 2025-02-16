@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock, FaUser, FaTimes } from "react-icons/fa";
-import { setFormData, login, signUp, verifyOtp, setOtp, resetError } from "../redux/Slices/authSlice";
+import { setFormData, login, signUp, verifyOtp, setOtp, resetError, forgotPassword } from "../redux/Slices/authSlice";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const LoginSignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { otpSent, otp, loading, userId, error } = useSelector(
+  const { otpSent, otp, userId, error } = useSelector(
     (state) => state.auth
   );
 
@@ -19,6 +19,10 @@ const LoginSignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [otpInputs, setOtpInputs] = useState(["", "", "", "", "", ""]);
   const [errors, setErrors] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetErrorMessage, setResetErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     if (loginFormData.token) {
@@ -43,7 +47,7 @@ const LoginSignUp = () => {
   };
 
   const validatePassword = (password) => {
-    const re = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    const re = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[a-zA-Z0-9]).{8,16}$/;
     return re.test(password);
   };
 
@@ -54,7 +58,7 @@ const LoginSignUp = () => {
       return;
     }
     if (!validatePassword(loginFormData.password)) {
-      toast.error("Password must be at least 8 characters long and include at least one uppercase letter, one special character, and a combination of alphanumeric characters.");
+      toast.error("Password not match. Enter Valid Password .");
       return;
     }
     dispatch(login(loginFormData)).then((response) => {
@@ -82,7 +86,7 @@ const LoginSignUp = () => {
       return;
     }
     if (!validatePassword(signUpFormData.password)) {
-      toast.error("Password must be at least 8 characters and include at least one uppercase, special character, and a combination of alphanumeric characters.");
+      toast.error("Password must be 8-16 characters long and include at least one uppercase letter, one special character, and a combination of alphanumeric characters.");
       return;
     }
     if (signUpFormData.password !== confirmPassword) {
@@ -91,11 +95,11 @@ const LoginSignUp = () => {
     }
     dispatch(signUp(signUpFormData)).then((response) => {
       if (response.payload && response.payload.success) {
-        toast.success(" Signup successful! Please verify your OTP.");
+        toast.success("Signup successful! Please verify your OTP.");
         // Set otpSent to true to switch to OTP verification tab
         dispatch(setOtp(""));
       } else {
-        toast.error(" Signup failed. Please try again.");
+        toast.error("Signup failed. Please try again.");
       }
     });
   };
@@ -120,17 +124,17 @@ const LoginSignUp = () => {
     }
   };
 
-  useEffect(() => {
-    if (error) {
-      toast.error(" Invalid OTP. Please check and try again.");
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     toast.error(" Invalid OTP. Please check and try again.");
+  //   }
+  // }, [error]);
 
   const handleOtpChange = (index, value) => {
     if (!/^[a-zA-Z0-9]?$/.test(value)) return;
     const newOtpInputs = [...otpInputs];
     newOtpInputs[index] = value;
-    if (value && index < otpInputs.length - 1 && !otpInputs[index + 1]) {
+    if (value && index < otpInputs.length - 1) {
       document.getElementById(`otp-input-${index + 1}`).focus();
     }
     setOtpInputs(newOtpInputs);
@@ -145,13 +149,30 @@ const LoginSignUp = () => {
   };
 
   const handleForgotPassword = () => {
-    navigate("/forgot-password");
+    setIsModalOpen(true);
+  };
+
+  const handleResetPassword = () => {
+    if (!validateEmail(resetEmail)) {
+      setResetErrorMessage("Invalid email format. Only gmail.com and yahoo.com are allowed.");
+      return;
+    }
+    dispatch(forgotPassword(resetEmail)).then((response) => {
+      if (response.payload && response.payload.success) {
+        setSuccessMessage("Reset link sent successfully! Check Email.");
+        setResetErrorMessage(""); // Clear any previous error message
+      } else {
+        setResetErrorMessage("Failed to send reset link. Please enter valid email.");
+        setSuccessMessage(""); // Clear any previous success message
+      }
+    });
   };
 
   const handleClose = () => {
     navigate("/"); // Navigate to the home page or any other desired page
   };
 
+  // Define renderInput function here, before it is used in JSX
   const renderInput = (type, value, onChange, placeholder, Icon, error, maxLength) => (
     <div className="mb-4 relative">
       <input
@@ -159,7 +180,7 @@ const LoginSignUp = () => {
         value={value}
         onChange={onChange}
         maxLength={maxLength}
-        className={`border rounded-lg w-full p-3 pl-10 border-gray-300 focus:border-green-200 focus:ring-2 focus:ring-green focus:outline-none ${error ? "border-red-500" : ""}`}
+        className={`border rounded-lg w-full p-3 pl-10  border-gray-300 focus:border-green-200 focus:ring-2 focus:ring-green focus:outline-none ${error ? "border-red-500" : ""}`}
         placeholder={placeholder}
         required
       />
@@ -171,8 +192,8 @@ const LoginSignUp = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-500 to-purple-600">
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="bg-white shadow-lg rounded-3xl p-8 w-full max-w-md relative animate_animated animate_fadeIn">
-        <button onClick={handleClose} className="absolute -top-4 -right-4 text-white rounded-full transition-all p-2 bg-green-500 hover:bg-red-500 hover:text-white shadow-md" >
+      <div className="bg-white shadow-lg rounded-3xl p-8 w-full max-w-md relative animate__animated animate__fadeIn">
+        <button onClick={handleClose} className="absolute -top-4 -right-4 text-white hover:text-gray-700 rounded-full transition-all p-2 bg-green-500 hover:bg-red-500 hover:text-white shadow-md" >
           <FaTimes size={15} />
         </button>
         <div className="flex justify-between mb-6 space-x-2">
@@ -209,7 +230,7 @@ const LoginSignUp = () => {
               "Enter password",
               FaLock,
               errors.password,
-              8
+              16
             )}
             <div className="flex justify-end items-center mb-4">
               <button
@@ -223,9 +244,8 @@ const LoginSignUp = () => {
             <button
               type="submit"
               className="bg-gradient-to-r from-blue-500 to-green-500 w-full py-3 text-white rounded-lg transition-all duration-300 hover:from-green-500 hover:to-blue-500"
-              disabled={loading}
             >
-              {loading ? "Logging In..." : "Login"}
+              Login
             </button>
           </form>
         ) : (
@@ -252,9 +272,8 @@ const LoginSignUp = () => {
                 <button
                   type="submit"
                   className="bg-gradient-to-r from-green-500 to-blue-500 w-full py-3 text-white rounded-lg transition-all duration-300 hover:from-blue-500 hover:to-green-500"
-                  disabled={loading}
                 >
-                  {loading ? "Verifying..." : "Verify OTP"}
+                  Verify OTP
                 </button>
               </>
             ) : (
@@ -294,7 +313,7 @@ const LoginSignUp = () => {
                   "Enter Password",
                   FaLock,
                   errors.password,
-                  8
+                  16
                 )}
                 {renderInput(
                   "password",
@@ -303,20 +322,67 @@ const LoginSignUp = () => {
                   "Confirm Password",
                   FaLock,
                   errors.confirmPassword,
-                  8
+                  16
                 )}
                 <button
                   type="submit"
                   className="bg-gradient-to-r from-blue-500 to-green-500 w-full py-3 text-white rounded-lg transition-all duration-300 hover:from-green-500 hover:to-blue-500"
-                  disabled={loading}
                 >
-                  {loading ? "Signing Up..." : "Sign Up"}
+                  Sign Up
                 </button>
               </>
             )}
           </form>
         )}
       </div>
+
+      {/* Forgot Password Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold text-center mb-4">Request Password Reset</h2>
+            <div className="mb-4">
+              <label htmlFor="resetEmail" className="block text-sm font-medium text-gray-700">Enter Your Email</label>
+              <input
+                type="email"
+                id="resetEmail"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                required
+                className="mt-1 px-4 py-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              {resetErrorMessage && (
+                <div className="mt-2 text-red-600 text-sm">
+                  {resetErrorMessage}
+                </div>
+              )}
+              {successMessage && (
+                <div className="mt-2 text-green-600 text-sm">
+                  {successMessage}
+                </div>
+              )}
+            </div>
+            <div className="flex justify-between gap-4 mt-4">
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setResetErrorMessage('');
+                  setSuccessMessage('');
+                }}
+                className="w-1/2 bg-gray-700 text-white p-2 rounded-md hover:bg-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResetPassword}
+                className="w-1/2 bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700"
+              >
+               Reset Link
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

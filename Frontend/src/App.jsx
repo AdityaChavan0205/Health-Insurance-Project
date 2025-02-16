@@ -13,20 +13,24 @@ import SignUp from "./Pages/SignUp"; // Make sure SignUp is imported correctly
 import LoginSignup from "./Pages/LogInSingUp";
 import "./App.css"
 import LoginSignUp from "./Pages/LogInSingUp";
+import ForgotPassword from "./Pages/Forget";
+import Reset from "./Pages/Reset";
 const App = () => {
   return (
     <Provider store={store}> 
       <Router>
         <Navbar /> {/* Always visible */}
         <Routes>
-          <Route path="/" element={<Home />} /> {/* Default route */}
+          {/* {/* <Route path="/" element={<Home />} /> Default route */}
           <Route path="/about" element={<About />} />
           <Route path="/claim" element={<Claim />} />
           <Route path="/support" element={<Support />} />
           {/* <Route path="/login" element={<LoginSignup />} /> */}
           <Route path="/login" element={<LoginSignUp />} />
-          <Route path="/signup" element={<SignUp />} /> 
-
+          <Route path="/signup" element={<SignUp />} />  
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          {/* <Route path="/" element={<Reset/>} /> */}
+          <Route path="/reset-password/:resetToken" element={<Reset />} />
           {/* <Route path="/expert" element={<Expert />} /> */}
           {/* <Route path="/auth" element={<Auth />} /> Signup/Login */}
 

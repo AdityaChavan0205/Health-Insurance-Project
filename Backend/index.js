@@ -36,6 +36,6 @@ app.listen(PORT, () => {
 // Default Admin
 // require("./Controllers/adminController").initializeAdmin();
 
-app.get('/', (req, res) => {
-    res.send("<h1> THIS IS HOME PAGE... </h1>");
-});
+app.get("/" , (req,res) => {
+    res.send(`<h1> This is Home Page </h1>`)
+})

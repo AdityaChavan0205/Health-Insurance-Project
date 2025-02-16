@@ -1,4 +1,4 @@
-const UserModels = require("../models/User");
+const UserModels = require("../Models/User");
 const otpGenerator = require("otp-generator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -280,6 +280,59 @@ exports.userForgetPassword = async (req, res) => {
     }
 };
 
+// Reset User Password
+exports.resetPassword = async (req, res) => {
+    try {
+        const { resetToken } = req.params;
+        const { newPassword } = req.body;
+
+        // Validate input
+        if (!newPassword) {
+            return res.status(400).json({
+                success: false,
+                msg: "Please provide a new password.",
+            });
+        }
+
+        // Hash the token to compare with database
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(resetToken)
+            .digest("hex");
+
+        // Find user with valid token and expiration
+        const user = await UserModels.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                msg: "Invalid or expired password reset token.",
+            });
+        }
+
+        // Hash new password and update user
+        const hashPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            msg: "Password has been reset successfully.",
+        });
+
+    } catch (error) {
+        console.error("Password Reset Error:", error);
+        res.status(500).json({
+            success: false,
+            msg: "Error resetting password. Please try again later.",
+        });
+    }
+};
 // Admin Login
 exports.adminLogin = async (req, res) => {
     try {

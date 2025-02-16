@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const LoginSignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { otpSent, otp, loading, userId, error } = useSelector(
+  const { otpSent, otp, userId, error } = useSelector(
     (state) => state.auth
   );
 
@@ -47,7 +47,7 @@ const LoginSignUp = () => {
   };
 
   const validatePassword = (password) => {
-    const re = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[a-zA-Z0-9]).{8,}$/;
+    const re = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[a-zA-Z0-9]).{8,16}$/;
     return re.test(password);
   };
 
@@ -58,7 +58,7 @@ const LoginSignUp = () => {
       return;
     }
     if (!validatePassword(loginFormData.password)) {
-      toast.error("Password must be at least 8 characters long and include at least one uppercase letter, one special character, and a combination of alphanumeric characters.");
+      toast.error("Password not match. Enter Valid Password .");
       return;
     }
     dispatch(login(loginFormData)).then((response) => {
@@ -74,11 +74,11 @@ const LoginSignUp = () => {
     e.preventDefault();
     const newErrors = {};
     if (!/^[a-zA-Z]{1,20}$/.test(signUpFormData.firstName)) {
-      toast.error("Invalid First Name must be alphabetes only.");
+      toast.error("Invalid First Name must be alphabets only.");
       return;
     }
     if (!/^[a-zA-Z]{1,20}$/.test(signUpFormData.lastName)) {
-      toast.error("Invalid Last Name must be alphabetes only.");
+      toast.error("Invalid Last Name must be alphabets only.");
       return;
     }
     if (!validateEmail(signUpFormData.email)) {
@@ -86,7 +86,7 @@ const LoginSignUp = () => {
       return;
     }
     if (!validatePassword(signUpFormData.password)) {
-      toast.error("Password must be at least 8 characters and include at least one uppercase, special character, and a combination of alphanumeric characters.");
+      toast.error("Password must be 8-16 characters long and include at least one uppercase letter, one special character, and a combination of alphanumeric characters.");
       return;
     }
     if (signUpFormData.password !== confirmPassword) {
@@ -95,11 +95,11 @@ const LoginSignUp = () => {
     }
     dispatch(signUp(signUpFormData)).then((response) => {
       if (response.payload && response.payload.success) {
-        toast.success(" Signup successful! Please verify your OTP.");
+        toast.success("Signup successful! Please verify your OTP.");
         // Set otpSent to true to switch to OTP verification tab
         dispatch(setOtp(""));
       } else {
-        toast.error(" Signup failed. Please try again.");
+        toast.error("Signup failed. Please try again.");
       }
     });
   };
@@ -123,12 +123,6 @@ const LoginSignUp = () => {
       toast.error("⚠ Error verifying OTP. Please try again.");
     }
   };
-
-  useEffect(() => {
-    if (error) {
-      toast.error(" Invalid OTP. Please check and try again.");
-    }
-  }, [error]);
 
   const handleOtpChange = (index, value) => {
     if (!/^[a-zA-Z0-9]?$/.test(value)) return;
@@ -159,9 +153,11 @@ const LoginSignUp = () => {
     }
     dispatch(forgotPassword(resetEmail)).then((response) => {
       if (response.payload && response.payload.success) {
-        setSuccessMessage("Reset link sent successfully!");
+        setSuccessMessage("Reset link sent successfully! Check Email.");
+        setResetErrorMessage(""); // Clear any previous error message
       } else {
-        setResetErrorMessage("Failed to send reset link. Please try again.");
+        setResetErrorMessage("Failed to send reset link. Please enter valid email.");
+        setSuccessMessage(""); // Clear any previous success message
       }
     });
   };
@@ -178,7 +174,7 @@ const LoginSignUp = () => {
         value={value}
         onChange={onChange}
         maxLength={maxLength}
-        className={`border rounded-lg w-full p-3 pl-10 border border-gray-300 focus:border-green-200 focus:ring-2 focus:ring-green focus:outline-none ${error ? "border-red-500" : ""}`}
+        className={`border rounded-lg w-full p-3 pl-10  border-gray-300 focus:border-green-200 focus:ring-2 focus:ring-green focus:outline-none ${error ? "border-red-500" : ""}`}
         placeholder={placeholder}
         required
       />
@@ -228,7 +224,7 @@ const LoginSignUp = () => {
               "Enter password",
               FaLock,
               errors.password,
-              8
+              16
             )}
             <div className="flex justify-end items-center mb-4">
               <button
@@ -242,9 +238,8 @@ const LoginSignUp = () => {
             <button
               type="submit"
               className="bg-gradient-to-r from-blue-500 to-green-500 w-full py-3 text-white rounded-lg transition-all duration-300 hover:from-green-500 hover:to-blue-500"
-              disabled={loading}
             >
-              {loading ? "Logging In..." : "Login"}
+              Login
             </button>
           </form>
         ) : (
@@ -271,9 +266,8 @@ const LoginSignUp = () => {
                 <button
                   type="submit"
                   className="bg-gradient-to-r from-green-500 to-blue-500 w-full py-3 text-white rounded-lg transition-all duration-300 hover:from-blue-500 hover:to-green-500"
-                  disabled={loading}
                 >
-                  {loading ? "Verifying..." : "Verify OTP"}
+                  Verify OTP
                 </button>
               </>
             ) : (
@@ -313,7 +307,7 @@ const LoginSignUp = () => {
                   "Enter Password",
                   FaLock,
                   errors.password,
-                  8
+                  16
                 )}
                 {renderInput(
                   "password",
@@ -322,14 +316,13 @@ const LoginSignUp = () => {
                   "Confirm Password",
                   FaLock,
                   errors.confirmPassword,
-                  8
+                  16
                 )}
                 <button
                   type="submit"
                   className="bg-gradient-to-r from-blue-500 to-green-500 w-full py-3 text-white rounded-lg transition-all duration-300 hover:from-green-500 hover:to-blue-500"
-                  disabled={loading}
                 >
-                  {loading ? "Signing Up..." : "Sign Up"}
+                  Sign Up
                 </button>
               </>
             )}
@@ -378,7 +371,7 @@ const LoginSignUp = () => {
                 onClick={handleResetPassword}
                 className="w-1/2 bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700"
               >
-                Request Reset Link
+                Reset Link
               </button>
             </div>
           </div>

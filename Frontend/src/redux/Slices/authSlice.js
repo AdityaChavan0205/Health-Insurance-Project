@@ -65,18 +65,23 @@ export const forgotPassword = createAsyncThunk(
     }
   }
 );
-
 export const resetPassword = createAsyncThunk(
   "auth/resetPassword",
-  async ({ email, otp, newPassword }, { rejectWithValue }) => {
+  async ({ resetToken, newPassword }, { rejectWithValue }) => {
     try {
-      const response = await axios.post("http://localhost:3000/api/v1/login/user/forget-password", { email, otp, newPassword });
-      return response.data;
-    } catch (err) {
-      return rejectWithValue(err.response?.data?.msg || "Error during password reset.");
+      const { data } = await axios.post(
+        `http://localhost:3000/api/v1/user/reset-password/${resetToken}`, // ✅ This should match backend route
+        { newPassword },
+        { withCredentials: true }
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || "Invalid or expired token. Please request a new reset link.");
     }
   }
 );
+
+
 
 export const login = createAsyncThunk(
   "auth/login",

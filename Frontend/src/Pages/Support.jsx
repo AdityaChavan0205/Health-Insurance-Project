@@ -11,7 +11,7 @@ const Support = () => {
       onMouseLeave={() => setDropdownOpen(false)} // Close dropdown when mouse leaves
     >
       {/* Support Button with extra padding for wider hover area */}
-      <button className="flex items-center text-gray-700 text-base font-medium py-6 hover:text-blue-600">
+      <button className="flex items-center text-gray-700 text-base font-medium  hover:text-blue-600">
         Support
         <svg
           className={`w-4 h-4 ml-1 transform ${

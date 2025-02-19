@@ -11,7 +11,7 @@ const Claim = () => {
       onMouseLeave={() => setDropdownOpen(false)}
     >
       {/* Claim Button */}
-      <button className="flex items-center text-gray-700 text-base font-medium py-6 hover:text-blue-600">
+      <button className="flex items-center text-gray-700 text-base font-medium  hover:text-blue-600">
         Claim
         <svg
           className={`w-4 h-4 ml-1 transform ${

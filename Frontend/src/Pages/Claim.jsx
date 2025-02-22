@@ -11,7 +11,7 @@ const Claim = () => {
       onMouseLeave={() => setDropdownOpen(false)}
     >
       {/* Claim Button */}
-      <button className="flex items-center text-gray-700 text-base font-medium py-6 hover:text-blue-600">
+      <button className="flex items-center text-gray-700 text-base font-medium  hover:text-blue-600">
         Claim
         <svg
           className={`w-4 h-4 ml-1 transform ${dropdownOpen ? "rotate-180" : "rotate-0"
@@ -39,7 +39,7 @@ const Claim = () => {
             </li>
 
             {/* File a New Claim */}
-            <li className="flex items-center px-4 py-3 text-sm border-b border-gray-300 hover:bg-blue-50 transition-colors">
+            <li className="flex items-center px-4 py-3 text-sm border-b border-gray-200 hover:bg-blue-50 transition-colors">
               <Link
                 to="/file-claim"
                 className="flex items-center text-gray-700 hover:text-blue-600 w-full"
@@ -57,7 +57,7 @@ const Claim = () => {
             </li>
 
             {/* View Filed Claims */}
-            <li className="flex items-center px-4 py-3 text-sm border-b border-gray-300 hover:bg-blue-50 transition-colors">
+            <li className="flex items-center px-4 py-3 text-sm border-b border-gray-200 hover:bg-blue-50 transition-colors">
               <Link
                 to="/view-claims"
                 className="flex items-center text-gray-700 hover:text-blue-600 w-full"
@@ -75,7 +75,7 @@ const Claim = () => {
             </li>
 
             {/* Track a Claim */}
-            <li className="flex items-center px-4 py-3 text-sm border-b border-gray-300 hover:bg-blue-50 transition-colors">
+            <li className="flex items-center px-4 py-3 text-sm border-b border-gray-200 hover:bg-blue-50 transition-colors">
               <Link
                 to="/track-claim"
                 className="flex items-center text-gray-700 hover:text-blue-600 w-full"
@@ -93,7 +93,7 @@ const Claim = () => {
             </li>
 
             {/* Claim FAQs */}
-            <li className="flex items-center px-4 py-3 text-sm border-b border-gray-300 hover:bg-blue-50 transition-colors">
+            <li className="flex items-center px-4 py-3 text-sm border-b border-gray-200 hover:bg-blue-50 transition-colors">
               <Link
                 to="/claim-faqs"
                 className="flex items-center text-gray-700 hover:text-blue-600 w-full"

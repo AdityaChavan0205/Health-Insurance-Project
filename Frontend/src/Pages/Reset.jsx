@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { resetPassword } from "../redux/Slices/authSlice"; // Adjust path if needed
+import { resetPassword } from "../redux/Slices/authSlice";
 import { toast, ToastContainer } from "react-toastify";
-import { useParams, useNavigate } from "react-router-dom"; // ✅ Import useParams & useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ResetPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { resetToken } = useParams(); // ✅ Get resetToken from URL
+  const { resetToken } = useParams();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { loading, error } = useSelector((state) => state.auth);
 
   const validatePassword = (password) => {
@@ -20,7 +22,7 @@ const ResetPassword = () => {
   };
 
   const handleClose = () => {
-    navigate("/login"); // Navigate to the home page or any other desired page
+    navigate("/login");
   };
 
   const handleReset = () => {
@@ -43,57 +45,68 @@ const ResetPassword = () => {
       .unwrap()
       .then(() => {
         toast.success("Password reset successfully! Redirecting...");
-        setTimeout(() => navigate("/login"), 2000); // ✅ Redirect after success
+        setTimeout(() => navigate("/login"), 2000);
       })
       .catch((err) => toast.error(err));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8 sm:px-6 lg:px-8">
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md relative">
+      <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg w-full max-w-md relative">
         <button onClick={handleClose} className="absolute -top-4 -right-4 text-white hover:text-gray-700 rounded-full transition-all p-2 bg-green-500 hover:bg-red-500 hover:text-white shadow-md">
           <FaTimes size={15} />
         </button>
-        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
+        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4 sm:mb-6">
           Reset Password
         </h2>
 
-        {/* New Password */}
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <label className="block text-sm font-medium text-gray-600 mb-2">
             New Password
           </label>
           <input
-            type="password"
+            type={showNewPassword ? "text" : "password"}
             placeholder="Enter new password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             minLength={8}
             maxLength={16}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none pr-10"
             required
           />
+          <button
+            type="button"
+            onClick={() => setShowNewPassword(!showNewPassword)}
+            className="absolute inset-y-0 right-0 pr-3 pt-6 flex items-center cursor-pointer"
+          >
+            {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
 
-        {/* Confirm Password */}
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <label className="block text-sm font-medium text-gray-600 mb-2">
             Confirm Password
           </label>
           <input
-            type="password"
+            type={showConfirmPassword ? "text" : "password"}
             placeholder="Confirm new password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             minLength={8}
             maxLength={16}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none pr-10"
             required
           />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute inset-y-0 right-0 pr-3 pt-6 flex items-center cursor-pointer"
+          >
+            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
 
-        {/* Submit Button */}
         <button
           onClick={handleReset}
           disabled={loading}
@@ -102,7 +115,6 @@ const ResetPassword = () => {
           {loading ? "Resetting..." : "Reset Password"}
         </button>
 
-        {/* Error Message */}
         {error && <p className="text-red-500 text-center mt-3">{error}</p>}
       </div>
     </div>

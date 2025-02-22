@@ -1,21 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { FaEnvelope, FaLock, FaUser, FaTimes } from "react-icons/fa";
-import { setFormData, login, signUp, verifyOtp, setOtp, resetError, forgotPassword } from "../redux/Slices/authSlice";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {
+  FaEnvelope,
+  FaLock,
+  FaUser,
+  FaTimes,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
+import {
+  setFormData,
+  login,
+  signUp,
+  verifyOtp,
+  setOtp,
+  resetError,
+  forgotPassword,
+} from "../redux/Slices/authSlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const LoginSignUp = () => {
+const LoginSignUp = ({ onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { otpSent, otp, userId, error } = useSelector(
-    (state) => state.auth
-  );
+  const { otpSent, otp, userId, error } = useSelector((state) => state.auth);
 
   const [isLogin, setIsLogin] = useState(true);
-  const [loginFormData, setLoginFormData] = useState({ email: "", password: "" });
-  const [signUpFormData, setSignUpFormData] = useState({ firstName: "", lastName: "", email: "", password: "" });
+  const [loginFormData, setLoginFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [signUpFormData, setSignUpFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [otpInputs, setOtpInputs] = useState(["", "", "", "", "", ""]);
   const [errors, setErrors] = useState({});
@@ -23,6 +44,7 @@ const LoginSignUp = () => {
   const [resetEmail, setResetEmail] = useState("");
   const [resetErrorMessage, setResetErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (loginFormData.token) {
@@ -54,16 +76,19 @@ const LoginSignUp = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     if (!validateEmail(loginFormData.email)) {
-      toast.error("Invalid email format. Only gmail.com and yahoo.com are allowed.");
+      toast.error(
+        "Invalid email format. Only gmail.com and yahoo.com are allowed."
+      );
       return;
     }
     if (!validatePassword(loginFormData.password)) {
-      toast.error("Password not match. Enter Valid Password .");
+      toast.error("Password not match. Enter Valid Password.");
       return;
     }
     dispatch(login(loginFormData)).then((response) => {
       if (response.payload && response.payload.token) {
         navigate("/dashboard");
+        onClose();
       } else {
         toast.error(" Login failed. Please check your email and password.");
       }
@@ -82,11 +107,15 @@ const LoginSignUp = () => {
       return;
     }
     if (!validateEmail(signUpFormData.email)) {
-      toast.error("Invalid email format. Only gmail.com and yahoo.com are allowed.");
+      toast.error(
+        "Invalid email format. Only gmail.com and yahoo.com are allowed."
+      );
       return;
     }
     if (!validatePassword(signUpFormData.password)) {
-      toast.error("Password must be 8-16 characters long and include at least one uppercase letter, one special character, and a combination of alphanumeric characters.");
+      toast.error(
+        "Password must be 8-16 characters long and include at least one uppercase letter, one special character, and a combination of alphanumeric characters."
+      );
       return;
     }
     if (signUpFormData.password !== confirmPassword) {
@@ -112,7 +141,9 @@ const LoginSignUp = () => {
       return;
     }
     try {
-      const response = await dispatch(verifyOtp({ userId, otp: enteredOtp })).unwrap();
+      const response = await dispatch(
+        verifyOtp({ userId, otp: enteredOtp })
+      ).unwrap();
       if (response.success) {
         toast.success(" OTP verified successfully! Redirecting to login...");
         setTimeout(() => setIsLogin(true), 1000);
@@ -148,7 +179,9 @@ const LoginSignUp = () => {
 
   const handleResetPassword = () => {
     if (!validateEmail(resetEmail)) {
-      setResetErrorMessage("Invalid email format. Only gmail.com and yahoo.com are allowed.");
+      setResetErrorMessage(
+        "Invalid email format. Only gmail & yahoo are allowed."
+      );
       return;
     }
     dispatch(forgotPassword(resetEmail)).then((response) => {
@@ -156,52 +189,101 @@ const LoginSignUp = () => {
         setSuccessMessage("Reset link sent successfully! Check Email.");
         setResetErrorMessage(""); // Clear any previous error message
       } else {
-        setResetErrorMessage("Failed to send reset link. Please enter valid email.");
+        setResetErrorMessage(
+          "Failed to send reset link. Please enter valid email."
+        );
         setSuccessMessage(""); // Clear any previous success message
       }
     });
   };
 
   const handleClose = () => {
-    navigate("/"); // Navigate to the home page or any other desired page
+    navigate("/");
+    onClose(); // Navigate to the home page or any other desired page
   };
 
   // Define renderInput function here, before it is used in JSX
-  const renderInput = (type, value, onChange, placeholder, Icon, error, maxLength) => (
+  const renderInput = (
+    type,
+    value,
+    onChange,
+    placeholder,
+    Icon,
+    error,
+    maxLength,
+    isPassword = false
+  ) => (
     <div className="mb-4 relative">
       <input
-        type={type}
+        type={isPassword ? (showPassword ? "text" : "password") : type}
         value={value}
         onChange={onChange}
         maxLength={maxLength}
-        className={`border rounded-lg w-full p-3 pl-10  border-gray-300 focus:border-green-200 focus:ring-2 focus:ring-green focus:outline-none ${error ? "border-red-500" : ""}`}
+        className={`border rounded-lg w-full p-3 pl-10 pr-10 border-gray-300 focus:border-green-200 focus:ring-2 focus:ring-green focus:outline-none ${
+          error ? "border-red-500" : ""
+        }`}
         placeholder={placeholder}
         required
       />
       <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+
+      {/* Password Show/Hide Button */}
+      {isPassword && (
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+        >
+          {showPassword ? <FaEyeSlash /> : <FaEye />}
+        </button>
+      )}
+
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   );
 
+
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-blue-500 to-purple-600">
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+    <div className="min-h-screen flex flex-col  width:100vw, height: 100vh items-center justify-center  px-4">
+      {/* <button onClick={handleClose} className="absolute -top-4 -right-4 text-white hover:text-gray-700 rounded-full transition-all p-2 bg-green-500 hover:bg-red-500 hover:text-white shadow-md" >
+        <FaTimes size={15} />
+      </button> */}
+      <ToastContainer
+        position="top-right py-4"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="bg-white shadow-lg rounded-3xl p-8 w-full max-w-md relative animate__animated animate__fadeIn">
-        <button onClick={handleClose} className="absolute -top-4 -right-4 text-white hover:text-gray-700 rounded-full transition-all p-2 bg-green-500 hover:bg-red-500 hover:text-white shadow-md" >
+        <button
+          onClick={handleClose}
+          className="absolute -top-4 -right-4 text-white hover:text-gray-700 rounded-full transition-all p-2 bg-green-500 hover:bg-red-500 hover:text-white shadow-md"
+        >
           <FaTimes size={15} />
         </button>
         <div className="flex justify-between mb-6 space-x-2">
           <button
             onClick={() => setIsLogin(true)}
-            className={`w-1/2 py-2 text-center font-bold transition-all duration-300 ${isLogin ? "bg-blue-500 text-white rounded-lg hover:bg-blue-600" : "text-gray-500 hover:bg-gray-200"
-              }`}
+            className={`w-1/2 py-2 text-center font-bold transition-all duration-300 ${
+              isLogin
+                ? "bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                : "text-gray-500 hover:bg-gray-200"
+            }`}
           >
             Login
           </button>
           <button
             onClick={() => setIsLogin(false)}
-            className={`w-1/2 py-2 text-center font-bold transition-all duration-300 ${!isLogin ? "bg-blue-500 text-white rounded-lg hover:bg-blue-600" : "text-gray-500 hover:bg-gray-200"
-              }`}
+            className={`w-1/2 py-2 text-center font-bold transition-all duration-300 ${
+              !isLogin
+                ? "bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                : "text-gray-500 hover:bg-gray-200"
+            }`}
           >
             Signup
           </button>
@@ -212,7 +294,8 @@ const LoginSignUp = () => {
             {renderInput(
               "email",
               loginFormData.email,
-              (e) => setLoginFormData({ ...loginFormData, email: e.target.value }),
+              (e) =>
+                setLoginFormData({ ...loginFormData, email: e.target.value }),
               "Enter email",
               FaEnvelope,
               errors.email
@@ -220,12 +303,18 @@ const LoginSignUp = () => {
             {renderInput(
               "password",
               loginFormData.password,
-              (e) => setLoginFormData({ ...loginFormData, password: e.target.value }),
-              "Enter password",
+              (e) =>
+                setLoginFormData({
+                  ...loginFormData,
+                  password: e.target.value,
+                }),
+              "Enter Password",
               FaLock,
               errors.password,
-              16
+              16,
+              true // Enable password toggle
             )}
+
             <div className="flex justify-end items-center mb-4">
               <button
                 type="button"
@@ -243,10 +332,15 @@ const LoginSignUp = () => {
             </button>
           </form>
         ) : (
-          <form onSubmit={otpSent ? handleVerifyOtp : handleSignUp}>
+          <form
+            onSubmit={otpSent ? handleVerifyOtp : handleSignUp}
+            className="flex flex-col space-y-4"
+          >
             {otpSent ? (
               <>
-                <h2 className="text-center text-xl font-bold mb-4">Check your mail for the OTP</h2>
+                <h2 className="text-center text-xl font-bold mb-4">
+                  Check your mail for the OTP
+                </h2>
                 <div className="mb-4 flex justify-between space-x-2">
                   {otpInputs.map((value, index) => (
                     <input
@@ -272,11 +366,15 @@ const LoginSignUp = () => {
               </>
             ) : (
               <>
-                <div className="flex gap-2 mb-2">
+                <div className="flex gap-2  md:flex-row flex-col">
                   {renderInput(
                     "text",
                     signUpFormData.firstName,
-                    (e) => setSignUpFormData({ ...signUpFormData, firstName: e.target.value }),
+                    (e) =>
+                      setSignUpFormData({
+                        ...signUpFormData,
+                        firstName: e.target.value,
+                      }),
                     "First Name",
                     FaUser,
                     errors.firstName,
@@ -285,7 +383,11 @@ const LoginSignUp = () => {
                   {renderInput(
                     "text",
                     signUpFormData.lastName,
-                    (e) => setSignUpFormData({ ...signUpFormData, lastName: e.target.value }),
+                    (e) =>
+                      setSignUpFormData({
+                        ...signUpFormData,
+                        lastName: e.target.value,
+                      }),
                     "Last Name",
                     FaUser,
                     errors.lastName,
@@ -295,7 +397,11 @@ const LoginSignUp = () => {
                 {renderInput(
                   "email",
                   signUpFormData.email,
-                  (e) => setSignUpFormData({ ...signUpFormData, email: e.target.value }),
+                  (e) =>
+                    setSignUpFormData({
+                      ...signUpFormData,
+                      email: e.target.value,
+                    }),
                   "Enter Email",
                   FaEnvelope,
                   errors.email
@@ -303,12 +409,18 @@ const LoginSignUp = () => {
                 {renderInput(
                   "password",
                   signUpFormData.password,
-                  (e) => setSignUpFormData({ ...signUpFormData, password: e.target.value }),
+                  (e) =>
+                    setSignUpFormData({
+                      ...signUpFormData,
+                      password: e.target.value,
+                    }),
                   "Enter Password",
                   FaLock,
                   errors.password,
-                  16
+                  16,
+                  true
                 )}
+
                 {renderInput(
                   "password",
                   confirmPassword,
@@ -316,8 +428,10 @@ const LoginSignUp = () => {
                   "Confirm Password",
                   FaLock,
                   errors.confirmPassword,
-                  16
+                  16,
+                  true
                 )}
+
                 <button
                   type="submit"
                   className="bg-gradient-to-r from-blue-500 to-green-500 w-full py-3 text-white rounded-lg transition-all duration-300 hover:from-green-500 hover:to-blue-500"
@@ -334,9 +448,16 @@ const LoginSignUp = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold text-center mb-4">Request Password Reset</h2>
+            <h2 className="text-xl font-bold text-center mb-4">
+              Request Password Reset
+            </h2>
             <div className="mb-4">
-              <label htmlFor="resetEmail" className="block text-sm font-medium text-gray-700">Enter Your Email</label>
+              <label
+                htmlFor="resetEmail"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Enter Your Email
+              </label>
               <input
                 type="email"
                 id="resetEmail"
@@ -360,8 +481,8 @@ const LoginSignUp = () => {
               <button
                 onClick={() => {
                   setIsModalOpen(false);
-                  setResetErrorMessage('');
-                  setSuccessMessage('');
+                  setResetErrorMessage("");
+                  setSuccessMessage("");
                 }}
                 className="w-1/2 bg-gray-700 text-white p-2 rounded-md hover:bg-gray-800"
               >

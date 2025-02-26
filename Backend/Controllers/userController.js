@@ -19,6 +19,58 @@ exports.userSignUp = async (req, res) => {
                 .json({ success: false, msg: "All fields are required" });
         }
 
+        // Validation: First Name (no spaces or special characters)
+        const nameRegex = /^[A-Za-z]+$/;
+        if (!nameRegex.test(firstName)) {
+            return res.status(400).json({
+                success: false,
+                msg: "First name must not contain spaces or special characters.",
+            });
+        }
+
+        // Validation: Last Name (if needed, apply similar rules)
+        if (!nameRegex.test(lastName)) {
+            return res.status(400).json({
+                success: false,
+                msg: "Last name must not contain spaces or special characters.",
+            });
+        }
+
+        // Comprehensive Email Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Check if email contains spaces
+        if (/\s/.test(email)) {
+            return res.status(400).json({ success: false, msg: "Email must not contain spaces." });
+        }
+
+        // Validate email format
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ success: false, msg: "Invalid email format. Please enter a valid email address." });
+        }
+
+        // Check domain-specific restrictions (optional)
+        const allowedDomains = ["gmail.com", "yahoo.com", "outlook.com"];
+        const emailDomain = email.split("@")[1];
+
+        if (!allowedDomains.includes(emailDomain)) {
+            return res.status(400).json({
+                success: false,
+                msg: `Email domain not allowed. Only ${allowedDomains.join(", ")} are supported.`
+            });
+        }
+
+        // Password validation
+        const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+                success: false,
+                msg: "Password must be at least 8 characters long, include at least one numerical digit, and one special character."
+            });
+        }
+
+
+
         const existingUser = await UserModels.findOne({ email });
 
         // Admin Cannot be registered as a user
@@ -235,6 +287,16 @@ exports.userForgetPassword = async (req, res) => {
                 msg: "No account found with that email address.",
             });
         }
+
+        // Password validation
+        const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({
+                success: false,
+                msg: "Password must be at least 8 characters long and include at least one special character.",
+            });
+        }
+
 
         // Check if the user is verified before allowing password reset
         if (!user.isVerified) {

@@ -45,6 +45,8 @@ const LoginSignUp = ({ onClose }) => {
   const [resetErrorMessage, setResetErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [timer, setTimer] = useState(300); // 5 minutes in seconds
+  const [showResendOtp, setShowResendOtp] = useState(false);
 
   useEffect(() => {
     if (loginFormData.token) {
@@ -57,6 +59,35 @@ const LoginSignUp = ({ onClose }) => {
       setOtpInputs(["", "", "", "", "", ""]);
     }
   }, [isLogin]);
+
+  useEffect(() => {
+    let interval;
+    if (otpSent) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => {
+          if (prevTimer <= 1) {
+            clearInterval(interval);
+            setShowResendOtp(true); // Show Resend OTP button when timer ends
+            return 0;
+          }
+          return prevTimer - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [otpSent]);
+
+  const handleResendOtp = () => {
+    dispatch(signUp(signUpFormData)).then((response) => {
+      if (response.payload && response.payload.success) {
+        toast.success("OTP resent successfully! Please check your email.");
+        setShowResendOtp(false); // Hide Resend OTP button
+        setTimer(300); // Reset timer to 5 minutes
+      } else {
+        toast.error("Failed to resend OTP. Please try again.");
+      }
+    });
+  };
 
   const handleSwitch = () => {
     setIsLogin(!isLogin);
@@ -128,7 +159,7 @@ const LoginSignUp = ({ onClose }) => {
         // Set otpSent to true to switch to OTP verification tab
         dispatch(setOtp(""));
       } else {
-        toast.error("Signup failed. Please try again.");
+        toast.error("Signup failed. May user already in Database. Please try to login.");
       }
     });
   };
@@ -219,9 +250,8 @@ const LoginSignUp = ({ onClose }) => {
         value={value}
         onChange={onChange}
         maxLength={maxLength}
-        className={`border rounded-lg w-full p-3 pl-10 pr-10 border-gray-300 focus:border-green-200 focus:ring-2 focus:ring-green focus:outline-none ${
-          error ? "border-red-500" : ""
-        }`}
+        className={`border rounded-lg w-full p-3 pl-10 pr-10 border-gray-300 focus:border-green-200 focus:ring-2 focus:ring-green focus:outline-none ${error ? "border-red-500" : ""
+          }`}
         placeholder={placeholder}
         required
       />
@@ -242,6 +272,11 @@ const LoginSignUp = ({ onClose }) => {
     </div>
   );
 
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
+  };
 
   return (
     <div className="min-h-screen flex flex-col  width:100vw, height: 100vh items-center justify-center  px-4">
@@ -269,21 +304,19 @@ const LoginSignUp = ({ onClose }) => {
         <div className="flex justify-between mb-6 space-x-2">
           <button
             onClick={() => setIsLogin(true)}
-            className={`w-1/2 py-2 text-center font-bold transition-all duration-300 ${
-              isLogin
-                ? "bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                : "text-gray-500 hover:bg-gray-200"
-            }`}
+            className={`w-1/2 py-2 text-center font-bold transition-all duration-300 ${isLogin
+              ? "bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              : "text-gray-500 hover:bg-gray-200"
+              }`}
           >
             Login
           </button>
           <button
             onClick={() => setIsLogin(false)}
-            className={`w-1/2 py-2 text-center font-bold transition-all duration-300 ${
-              !isLogin
-                ? "bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                : "text-gray-500 hover:bg-gray-200"
-            }`}
+            className={`w-1/2 py-2 text-center font-bold transition-all duration-300 ${!isLogin
+              ? "bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              : "text-gray-500 hover:bg-gray-200"
+              }`}
           >
             Signup
           </button>
@@ -363,8 +396,19 @@ const LoginSignUp = ({ onClose }) => {
                 >
                   Verify OTP
                 </button>
-              </>
-            ) : (
+                <div className="text-right mt-2 text-gray-500">
+                  Time remaining: {formatTime(timer)}
+                </div>
+                {showResendOtp && (
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </>) : (
               <>
                 <div className="flex gap-2  md:flex-row flex-col">
                   {renderInput(

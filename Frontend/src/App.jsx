@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/Store/store";
 import Navbar from "./Components/Navbar";
 import Home from "./Pages/Home";
-import About from "./Pages/AboutUs";
+import About, { AboutUs } from "./Pages/AboutUs";
 import Claim from "./Pages/Claim";
 import Support from "./Pages/Support";
 import Login from "./Pages/Login";
@@ -22,7 +22,7 @@ const App = () => {
         <Navbar /> {/* Always visible */}
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<AboutUs />} />
           <Route path="/claim" element={<Claim />} />
           <Route path="/support" element={<Support />} />
           {/* <Route path="/login" element={<LoginSignup />} /> */}

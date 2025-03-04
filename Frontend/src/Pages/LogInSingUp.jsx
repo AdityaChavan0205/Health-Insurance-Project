@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+// import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import {
   FaEnvelope,
@@ -20,6 +21,8 @@ import {
 } from "../redux/Slices/authSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+const clientId = "841090175121-4vb6ko7to48e1v1g7oj091f3gvq42e70.apps.googleusercontent.com"; // Replace with your actual Google Client ID
 
 const LoginSignUp = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -92,6 +95,16 @@ const LoginSignUp = ({ onClose }) => {
   const handleSwitch = () => {
     setIsLogin(!isLogin);
     dispatch(resetError());
+  };
+
+  const handleGoogleSuccess = (credentialResponse) => {
+    console.log("Google Sign-In Success:", credentialResponse);
+    // Decode JWT token to get user details
+  };
+
+
+  const handleGoogleFailure = (error) => {
+    console.log("Google Sign-In Failed:", error);
   };
 
   const validateEmail = (email) => {

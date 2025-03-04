@@ -1,7 +1,7 @@
 import React from "react";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 
-const Footer = () => {
+export const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-10 mt-auto">
       <div className="max-w-7xl mx-auto px-6">
@@ -61,9 +61,9 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-
-          {/* Divider */}
-          <div className="hidden md:block w-px h-12 bg-gray-400 mr-40"></div>
+          {/* 
+          Divider
+          <div className="hidden md:block w-px h-12 bg-gray-400 mr-0"></div> */}
 
           {/* Social Media */}
           <div className="flex flex-col items-center md:items-end">
@@ -74,7 +74,7 @@ const Footer = () => {
               </a>
               <a href="#" className="text-gray-400 hover:text-white text-xl">
                 <FaTwitter />
-              </a>
+              </a>    
               <a href="#" className="text-gray-400 hover:text-white text-xl">
                 <FaInstagram />
               </a>
@@ -85,7 +85,7 @@ const Footer = () => {
         {/* Social Media & Copyright */}
         <div className="mt-8 border-t border-gray-700 pt-6 flex items-center justify-center px-6">
           <p className="text-gray-500 text-sm text-center">
-            © 2024 MedInsure. All Rights Reserved. Your Trusted Health Insurance
+            © 2025 MedInsure. All Rights Reserved. Your Trusted Health Insurance
             Partner
           </p>
         </div>

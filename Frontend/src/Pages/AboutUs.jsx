@@ -1,5 +1,5 @@
 import React from 'react'
-
+import Footer from '../Components/Footer';
 export const AboutUs = () => {
   return (
     <>
@@ -95,6 +95,7 @@ export const AboutUs = () => {
           </button>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

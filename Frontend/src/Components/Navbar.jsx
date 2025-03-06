@@ -32,17 +32,24 @@ const Navbar = () => {
   return (
     <header className="bg-blue-200 shadow-md w-full relative">
       <div className="container mx-auto flex items-center justify-between py-2 px-2">
-        <div className="flex items-center space-x-2">
-          <img src="../logo1.png" alt="Website Logo" className="h-10 w-10" />
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">
-              <span className="text-green-800">Health</span>{" "}
-              <span className="text-green-800">Life</span>{" "}
-              <span className="text-green-800">Insurance</span>
-            </h1>
-            <p className="text-sm text-gray-500 italic">"Your Health, Our Priority!"</p>
-          </div>
-        </div>
+      <div className="flex items-center space-x-2">
+      {/* Wrap logo in NavLink to make it clickable */}
+      <NavLink to="/">
+        <img src="../logo1.png" alt="Website Logo" className="h-10 w-10" />
+      </NavLink>
+
+      <div>
+        {/* Wrap heading in NavLink to make it clickable */}
+        <NavLink to="/">
+          <h1 className="text-xl font-bold text-gray-800">
+            <span className="text-green-800">Health</span>{" "}
+            <span className="text-green-800">Life</span>{" "}
+            <span className="text-green-800">Insurance</span>
+          </h1>
+        </NavLink>
+        <p className="text-sm text-gray-500 italic">"Your Health, Our Priority!"</p>
+      </div>
+    </div>
 
         <div className="lg:hidden">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} aria-expanded={isMenuOpen} className="p-2">

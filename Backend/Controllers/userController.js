@@ -58,8 +58,6 @@ exports.userSignUp = async (req, res) => {
                 msg: `Email domain not allowed. Only ${allowedDomains.join(", ")} are supported.`
             });
         }
-
-
         // Password validation
         const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
         if (!passwordRegex.test(password)) {
@@ -217,8 +215,8 @@ exports.userLogin = async (req, res) => {
             return res.status(404).json({ success: false, msg: "User not found. Please sign up first." });
         }
 
-        // Log user data for debugging
-        console.log("Login User Data:", user);
+        // // Log user data for debugging
+        // console.log("Login User Data:", user);
 
         // Check verification status
         if (!user.isVerified) {

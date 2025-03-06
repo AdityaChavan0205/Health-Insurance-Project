@@ -22,7 +22,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const clientId = "841090175121-4vb6ko7to48e1v1g7oj091f3gvq42e70.apps.googleusercontent.com"; // Replace with your actual Google Client ID
+const clientId = "841090175121-4vb6ko7to48e1v1g7oj091f3gvq42e70.apps.googleusercontent.com"; // Replace with your actual Google Client ID2
 
 const LoginSignUp = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -131,7 +131,7 @@ const LoginSignUp = ({ onClose }) => {
     }
     dispatch(login(loginFormData)).then((response) => {
       if (response.payload && response.payload.token) {
-        navigate("/dashboard");
+        navigate("/");
         onClose();
       } else {
         toast.error(" Login failed. Please check your email and password.");
@@ -152,7 +152,7 @@ const LoginSignUp = ({ onClose }) => {
     }
     if (!validateEmail(signUpFormData.email)) {
       toast.error(
-        "Invalid email format. Only gmail.com and yahoo.com are allowed."
+        "Invalid email. Only gmail.com, yahoo.com, and outlook.com are allowed."
       );
       return;
     }
@@ -172,7 +172,7 @@ const LoginSignUp = ({ onClose }) => {
         // Set otpSent to true to switch to OTP verification tab
         dispatch(setOtp(""));
       } else {
-        toast.error("Signup failed. May user already in Database. Please try to login.");
+        toast.error("Signup failed. This email may already be registered. Please try logging in.");
       }
     });
   };
@@ -292,7 +292,7 @@ const LoginSignUp = ({ onClose }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col  width:100vw, height: 100vh items-center justify-center  px-4">
+    <div className="h-[100vh] my-auto min-h-screen flex flex-col  items-center justify-center">
       {/* <button onClick={handleClose} className="absolute -top-4 -right-4 text-white hover:text-gray-700 rounded-full transition-all p-2 bg-green-500 hover:bg-red-500 hover:text-white shadow-md" >
         <FaTimes size={15} />
       </button> */}

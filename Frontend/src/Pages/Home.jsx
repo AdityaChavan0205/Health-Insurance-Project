@@ -52,54 +52,75 @@ function Home() {
       </div>
 
       {/* Plans Section */}
-      <center><h1 className="pt-8 text-3xl font-bold bg-gray-00">OUR PLANS</h1></center>
-      <div className="px-6 pt-12 pb-16 bg-blue-00">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 cursor-pointer">
-          {/* First Card */}
-          <div className="bg-red-00 bg-pink-200 shadow-md py-12 rounded-md text-center hover:shadow-xl hover:scale-105">
-            <img
-              src="\public\Total_Protection.png"  // Replace with your logo path
-              alt="Logo"
-              className="w-16 h-16 mx-auto mb-4"  // Adjust size as needed
-            />
-            <h1 className="text-xl font-bold mb-2">Total Protection</h1>
-            <p>Wide-ranging plans covering all health aspects.</p>
-          </div>
+      <center><h1 className="pt-8 text-3xl font-bold bg-gray-100 ">OUR PLANS</h1></center>
+      <div className="px-6 pt-10 pb-16 bg-gray-100">
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 cursor-pointer"
+        initial={{ opacity: 0, scale: 0.5 }} 
+        animate={{ opacity: 1, scale: 1 }} 
+        transition={{ duration: 1 }}
+      >
+        {/* First Card */}
+        <motion.div 
+          className="bg-red-00 bg-pink-200 shadow-md py-12 rounded-md text-center hover:shadow-xl hover:scale-105"
+          whileHover={{ scale: 1.03 }} 
+          transition={{ duration: 0.3 }}
+        >
+          <img
+            src="\public\Total_Protection.png"
+            alt="Logo"
+            className="w-16 h-16 mx-auto mb-4"
+          />
+          <h1 className="text-xl font-bold mb-2">Total Protection</h1>
+          <p>Wide-ranging plans covering all health aspects.</p>
+        </motion.div>
 
-          {/* Second Card */}
-          <div className="bg-orange-00 bg-blue-200 shadow-md py-10 rounded-md text-center hover:shadow-xl hover:scale-105 cursor-pointer">
-            <img
-              src="\public\Family_Coverage.png"  // Replace with your logo path
-              alt="Logo"
-              className="w-20 h-20 mx-auto mb-2"  // Adjust size as needed
-            />
-            <h1 className="text-xl font-bold mb-2">Family Coverage</h1>
-            <p>Comprehensive coverage for you and your loved ones.</p>
-          </div>
+        {/* Second Card */}
+        <motion.div 
+          className="bg-orange-00 bg-blue-200 shadow-md py-10 rounded-md text-center hover:shadow-xl hover:scale-105 cursor-pointer"
+          whileHover={{ scale: 1.03 }} 
+          transition={{ duration: 0.3 }}
+        >
+          <img
+            src="\public\Family_Coverage.png"
+            alt="Logo"
+            className="w-20 h-20 mx-auto mb-2"
+          />
+          <h1 className="text-xl font-bold mb-2">Family Coverage</h1>
+          <p>Comprehensive coverage for you and your loved ones.</p>
+        </motion.div>
 
-          {/* Third Card */}
-          <div className="bg-pink-200 shadow-md py-14 rounded-md text-center hover:shadow-xl hover:scale-105 cursor-pointer">
-            <img
-              src="\public\Affordable_plans.png"  // Replace with your logo path
-              alt="Logo"
-              className="w-16 h-14 mx-auto mb-4"  // Adjust size as needed
-            />
-            <h1 className="text-xl font-bold mb-2">Affordable Plans</h1>
-            <p>Budget-friendly options for all income levels.</p>
-          </div>
+        {/* Third Card */}
+        <motion.div 
+          className="bg-pink-200 shadow-md py-14 rounded-md text-center hover:shadow-xl hover:scale-105 cursor-pointer"
+          whileHover={{ scale: 1.03 }} 
+          transition={{ duration: 0.3 }}
+        >
+          <img
+            src="\public\Affordable_plans.png"
+            alt="Logo"
+            className="w-16 h-14 mx-auto mb-4"
+          />
+          <h1 className="text-xl font-bold mb-2">Affordable Plans</h1>
+          <p>Budget-friendly options for all income levels.</p>
+        </motion.div>
 
-          {/* Fourth Card */}
-          <div className="bg-green-00 bg-blue-200 shadow-md py-12 rounded-md text-center hover:shadow-xl hover:scale-105 cursor-pointer">
-            <img
-              src="\public\Constant_Support.png"  // Replace with your logo path
-              alt="Logo"
-              className="w-16 h-16 mx-auto mb-4"  // Adjust size as needed
-            />
-            <h1 className="text-xl font-bold mb-2">Constant Support</h1>
-            <p>Round-the-clock support for all policy needs.</p>
-          </div>
-        </div>
-      </div>
+        {/* Fourth Card */}
+        <motion.div 
+          className="bg-green-00 bg-blue-200 shadow-md py-12 rounded-md text-center hover:shadow-xl hover:scale-105 cursor-pointer"
+          whileHover={{ scale: 1.03 }} 
+          transition={{ duration: 0.3 }}
+        >
+          <img
+            src="\public\Constant_Support.png"
+            alt="Logo"
+            className="w-16 h-16 mx-auto mb-4"
+          />
+          <h1 className="text-xl font-bold mb-2">Constant Support</h1>
+          <p>Round-the-clock support for all policy needs.</p>
+        </motion.div>
+      </motion.div>
+    </div>
 
 
       {/* 3rd section */}
@@ -134,26 +155,46 @@ function Home() {
 
       {/* // Explore More Section */}
       <center><h1 className='pt-12 bg-gray-100 font-bold text-3xl'>Explore Our Diverse Insurance Options</h1></center>
-      <div className='px-8 py-12 bg-gray-100'>
-        <div className='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {/* Box 1 */}
-          <div className='shadow-md rounded-md py-16 text-center text-white bg-blue-800 hover:bg-red-600 hover:scale-105 cursor-pointer'>
-            <h1 className='font-bold text-2xl'>Individual Health</h1>
-            <h1 className='font-bold text-2xl'>  Insurance</h1>
-            <p className='pt-6 px-2'>Comprehensive health coverage tailored for individuals.</p>
-          </div>
-          {/* Box 2 */}
-          <div className='shadow-md rounded-md py-16 text-center text-white bg-blue-800 hover:bg-red-600 hover:scale-105 cursor-pointer'>
-            <h1 className='font-bold text-2xl'>Maternity & Childcare Coverage</h1>
-            <p className='pt-6 px-2'>Comprehensive care for expecting mothers and newborns.</p>
-          </div>
-          {/* Box 3 */}
-          <div className='shadow-md rounded-md py-16 text-center text-white bg-blue-800 hover:bg-red-600 hover:scale-105 cursor-pointer'>
-            <h1 className='font-bold text-2xl'>Hospitalization and Surgery Plans</h1>
-            <p className='pt-6 px-2'>Financial security for medical emergencies and surgeries.</p>
-          </div>
-        </div>
-      </div>
+      <div className="px-8 py-12 bg-gray-100">
+      {/* Page Load Animation */}
+      <motion.div
+        className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1 }}
+      >
+        {/* Box 1 */}
+        <motion.div
+          className="shadow-md rounded-md py-16 text-center text-white bg-blue-800 cursor-pointer"
+          whileHover={{ scale: 1.05, backgroundColor: "#f56568" }} // On hover, scale and change background to red
+          transition={{ duration: 0.3 }}
+        >
+          <h1 className="font-bold text-2xl">Individual Health</h1>
+          <h1 className="font-bold text-2xl"> Insurance</h1>
+          <p className="pt-6 px-2">Comprehensive health coverage tailored for individuals.</p>
+        </motion.div>
+
+        {/* Box 2 */}
+        <motion.div
+          className="shadow-md rounded-md py-16 text-center text-white bg-green-600 cursor-pointer"
+          whileHover={{ scale: 1.05, backgroundColor: "39b2ac" }} // On hover, scale and change background to light gray
+          transition={{ duration: 0.3 }}
+        >
+          <h1 className="font-bold text-2xl">Maternity & Childcare Coverage</h1>
+          <p className="pt-6 px-2">Comprehensive care for expecting mothers and newborns.</p>
+        </motion.div>
+
+        {/* Box 3 */}
+        <motion.div
+          className="shadow-md rounded-md py-16 text-center text-white bg-purple-800 cursor-pointer"
+          whileHover={{ scale: 1.05, backgroundColor: "#38b2ac" }} // On hover, scale and change background to teal
+          transition={{ duration: 0.3 }}
+        >
+          <h1 className="font-bold text-2xl">Hospitalization and Surgery Plans</h1>
+          <p className="pt-6 px-2">Financial security for medical emergencies and surgeries.</p>
+        </motion.div>
+      </motion.div>
+    </div>
 
 
       {/* Contact Form Section */}

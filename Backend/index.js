@@ -23,8 +23,11 @@ require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 
 // Routes
-const route = require("./Routes/authRoute");
-app.use('/api/v1/', route);
+const userRoute = require("./Routes/authRoute");
+app.use('/api/v1/', userRoute);
+
+const planRoute = require("./Routes/planRoute");
+app.use('/api/v1/', planRoute);
 
 // DB Connections
 require("./Config/database").dbConnects();
